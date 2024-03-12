@@ -7,6 +7,10 @@ public class CAPYBARA_MOVEMENT : MonoBehaviour
     float HorizontalInput;
     float moveSpeed = 5f;
     bool isFacingLeft = false;
+    float jumpPower = 4f;
+    bool isJumping = false;
+    float coyoteTime = 0.1f; // Adjust this value to change coyote time duration
+    float coyoteTimer = 0f;
     Rigidbody2D rb;
 
     void Start()
@@ -18,6 +22,23 @@ public class CAPYBARA_MOVEMENT : MonoBehaviour
     {
         HorizontalInput = Input.GetAxis("Horizontal");
         FlipSprite();
+
+        if (Input.GetButtonDown("Jump") && !isJumping)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+            isJumping = true;
+            coyoteTimer = coyoteTime; // Set coyote timer when the jump button is pressed
+        }
+
+        // Check for coyote time
+        if (coyoteTimer > 0f)
+        {
+            coyoteTimer -= Time.deltaTime;
+        }
+        else
+        {
+            isJumping = false;
+        }
     }
 
     private void FixedUpdate()
@@ -34,5 +55,10 @@ public class CAPYBARA_MOVEMENT : MonoBehaviour
             ls.x *= -1f;
             transform.localScale = ls;
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        isJumping = false;
     }
 }
