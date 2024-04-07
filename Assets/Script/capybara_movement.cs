@@ -1,64 +1,60 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class CAPYBARA_MOVEMENT : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
-    float HorizontalInput;
+    float horizontalInput;
     float moveSpeed = 5f;
-    bool isFacingLeft = false;
-    float jumpPower = 4f;
-    bool isJumping = false;
-    float coyoteTime = 0.1f; // Adjust this value to change coyote time duration
-    float coyoteTimer = 0f;
-    Rigidbody2D rb;
+    bool isFacingRight = false;
+    float jumpPower = 5f;
+    bool isGrounded = false;
 
+    Rigidbody2D rb;
+    Animator animator;
+
+    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
+    // Update is called once per frame
     void Update()
     {
-        HorizontalInput = Input.GetAxis("Horizontal");
+        horizontalInput = Input.GetAxis("Horizontal");
+
         FlipSprite();
 
-        if (Input.GetButtonDown("Jump") && !isJumping)
+        if(Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpPower);
-            isJumping = true;
-            coyoteTimer = coyoteTime; // Set coyote timer when the jump button is pressed
-        }
-
-        // Check for coyote time
-        if (coyoteTimer > 0f)
-        {
-            coyoteTimer -= Time.deltaTime;
-        }
-        else
-        {
-            isJumping = false;
+            isGrounded = false;
+            animator.SetBool("isJumping", !isGrounded);
         }
     }
 
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(HorizontalInput * moveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
+        animator.SetFloat("xVelocity", Math.Abs(rb.velocity.x));
+        animator.SetFloat("yVelocity", rb.velocity.y);
     }
 
     void FlipSprite()
     {
-        if ((isFacingLeft && HorizontalInput < 0f) || (!isFacingLeft && HorizontalInput > 0f))
+        if(isFacingRight && horizontalInput < 0f || !isFacingRight && horizontalInput > 0f)
         {
-            isFacingLeft = !isFacingLeft;
+            isFacingRight = !isFacingRight;
             Vector3 ls = transform.localScale;
             ls.x *= -1f;
             transform.localScale = ls;
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        isJumping = false;
+        isGrounded = true;
+        animator.SetBool("isJumping", !isGrounded);
     }
 }
