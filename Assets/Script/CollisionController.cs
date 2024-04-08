@@ -1,18 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CollisionController : MonoBehaviour
+public class CollisionAnimationTrigger : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    // Reference to the Animator component
+    private Animator animator;
+
+    private void Start()
     {
-        
+        // Get the Animator component attached to this GameObject
+        animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    // OnCollisionEnter is called when this GameObject collides with another GameObject
+    private void OnCollisionEnter(Collision collision)
     {
-        
+        // Check if the collision is with a GameObject tagged as "Player"
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            // Play the "death" animation
+            animator.Play("death");
+        }
     }
 }
