@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - danger
+  - dark
   layers:
   - Default
   - TransparentFX
@@ -39,6 +40,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: sky
+    uniqueID: 3960478077
+    locked: 0
+  - name: cave
+    uniqueID: 2395417983
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: player
+    uniqueID: 3296390177
     locked: 0
